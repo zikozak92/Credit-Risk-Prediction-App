@@ -1,8 +1,10 @@
 import streamlit as st
 import pandas as pd
+import os
 from src.preprocess import split_data, preprocess_data, format_classification_report
 from src.visualization import plot_confusion_matrix, plot_roc_curves, plot_pr_curves
 from src.models_func import *
+import joblib
 
 # Custom CSS for enhanced styling
 with open("static/style.css", "r") as f:
@@ -39,11 +41,6 @@ st.write(
 
 X_train_processed, X_test_processed, preprocessor = preprocess_data(X_train, X_test)
 
-# all_feature_names = get_feature_names(preprocessor)
-
-# X_train_df = pd.DataFrame(X_train_processed, columns=all_feature_names, index=X_train.index)
-# X_test_df = pd.DataFrame(X_test_processed, columns=all_feature_names, index=X_test.index)
-
 st.success("✅ Preprocessing complete.")
 
 st.write("**Processed training set shape:**", X_train_processed.shape)
@@ -61,7 +58,15 @@ st.write(
 
 st.subheader("🌲 Random Forest")
 
-rf_model = train_random_forest(X_train_processed, y_train)
+if os.path.exists('./data/rf_model.pkl'):
+    st.write(f"Loading saved model from {'rf_model.pkl'}")
+    rf_model = joblib.load('./data/rf_model.pkl')
+else:
+    st.write(f"No saved model found. Training new model: {'rf_model.pkl'}")
+    rf_model = train_random_forest(X_train_processed, y_train)
+    joblib.dump(rf_model, './data/rf_model.pkl')
+    st.write(f"Model saved to {'rf_model.pkl'}")
+
 rf_y_pred, rf_y_proba, rf_report, rf_auc = evaluate_model(rf_model, X_test_processed, y_test)
 
 col1, col2 = st.columns([0.6, 0.4], gap='large')
@@ -71,10 +76,22 @@ with col1:
     st.write(f"**ROC-AUC:** {rf_auc:.3f}")
 with col2:
     st.write("Confusion Matrix")
-    st.plotly_chart(plot_confusion_matrix(y_test, rf_y_pred))
+    cm_rf = plot_confusion_matrix(y_test, rf_y_pred)
+    st.plotly_chart(cm_rf, key='rf')
+
+
 # --- XGBoost ---
 st.subheader("⚡ XGBoost")
-xgb_model = train_xgboost(X_train_processed, y_train)
+
+if os.path.exists('./data/xgb_model.pkl'):
+    st.write(f"Loading saved model from {'xgb_model.pkl'}")
+    xgb_model = joblib.load('./data/xgb_model.pkl')
+else:
+    st.write(f"No saved model found. Training new model: {'xgb_model.pkl'}")
+    xgb_model = train_xgboost(X_train_processed, y_train)
+    joblib.dump(xgb_model, './data/xgb_model.pkl')
+    st.write(f"Model saved to {'xgb_model.pkl'}")
+
 xgb_y_pred, xgb_y_proba, xgb_report, xgb_auc = evaluate_model(xgb_model, X_test_processed, y_test)
 
 col1, col2 = st.columns([0.6, 0.4], gap='large')
@@ -84,12 +101,22 @@ with col1:
     st.write(f"**ROC-AUC:** {xgb_auc:.3f}")
 with col2:
     st.write("Confusion Matrix")
-    st.plotly_chart(plot_confusion_matrix(y_test, xgb_y_pred))
+    cm_xgb = plot_confusion_matrix(y_test, xgb_y_pred)
+    st.plotly_chart(cm_xgb, key='xgb')
 
 
 # --- LightGBM ---
 st.subheader("💡 LightGBM")
-lgbm_model = train_lightgbm(X_train_processed, y_train)
+
+if os.path.exists('./data/lgbm_model.pkl'):
+    st.write(f"Loading saved model from {'lgbm_model.pkl'}")
+    lgbm_model = joblib.load('./data/lgbm_model.pkl')
+else:
+    st.write(f"No saved model found. Training new model: {'lgbm_model.pkl'}")
+    lgbm_model = train_lightgbm(X_train_processed, y_train)
+    joblib.dump(lgbm_model, './data/lgbm_model.pkl')
+    st.write(f"Model saved to {'lgbm_model.pkl'}")
+
 lgbm_y_pred, lgbm_y_proba, lgbm_report, lgbm_auc = evaluate_model(lgbm_model, X_test_processed, y_test)
 
 col1, col2 = st.columns([0.6, 0.4], gap='large')
@@ -99,7 +126,8 @@ with col1:
     st.write(f"**ROC-AUC:** {lgbm_auc:.3f}")
 with col2:
     st.write("Confusion Matrix")
-    st.plotly_chart(plot_confusion_matrix(y_test, lgbm_y_pred))
+    cm_lgbm = plot_confusion_matrix(y_test, lgbm_y_pred)
+    st.plotly_chart(cm_lgbm, key='lgbm')
 
 # --- ROC Curves ---
 st.subheader("📈 Model Comparison")

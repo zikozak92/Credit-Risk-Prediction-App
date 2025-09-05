@@ -1,0 +1,65 @@
+.main {
+    background-color: #f5f7fa;
+    }
+
+.block-container {
+    padding-top: 3rem;
+    }
+
+.stButton>button {
+    background-color: #003087;
+    color: white;
+    border-radius: 5px;
+    }
+
+.stSelectbox, .stMultiselect, .stSlider {
+    background-color: none;
+    border-radius: 5px;
+    padding: 5px;
+    }
+
+h1, h2, h3 { color: #003087; font-family: 'Arial', sans-serif; }
+
+.sidebar .sidebar-content { background-color: #e6e9ef; }
+
+.stMetric {
+    box-shadow: none !important;
+    border: none !important;
+    background-color: none !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+    }
+
+[data-testid="stMetricLabel"] p {
+    font-size: 18px !important;  /* Bigger label */
+    color: #555555 !important;
+    }
+
+.stDataFrame {
+    border: none !important;
+    border-radius: 8px !important;
+    background-color: #ffffff !important;
+}
+div[data-testid="stDataFrame"] table {
+    border-collapse: collapse !important;
+}
+div[data-testid="stDataFrame"] th {
+    background-color: #003087 !important;
+    color: #ffffff !important;
+    font-size: 12px !important;
+    text-align: center !important;
+    padding: 8px !important;
+    border: 1px solid #e0e0e0 !important;
+}
+div[data-testid="stDataFrame"] td {
+    color: #333333 !important;
+    font-size: 11px !important;
+    padding: 8px !important;
+    border: 1px solid #e0e0e0 !important;
+}
+div[data-testid="stDataFrame"] tr:nth-child(even) {
+    background-color: #f5f5f5 !important;
+}
+div[data-testid="stDataFrame"] tr:hover {
+    background-color: #e6f0fa !important;
+}

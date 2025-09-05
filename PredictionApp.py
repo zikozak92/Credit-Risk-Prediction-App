@@ -14,10 +14,37 @@ st.set_page_config(page_title="Credit Risk Prediction", layout="wide")
 # --- Title and Introduction ---
 st.title("Credit Risk Prediction App")
 st.write("""
-Welcome to the **Credit Risk Prediction App**.  
-Upload a dataset (CSV or Excel) containing loan applications, and the model will help predict the likelihood of default.  
+Welcome to the **Credit Risk Prediction App**.
+
+Upload a dataset (CSV or Excel) containing loan applications, and the model will predict the likelihood of default for each application.
 """)
 
+st.subheader("Expected Data Format")
+st.write("Your dataset should contain the following columns:")
+
+required_columns = [
+    "loan_id", "person_age", "person_income", "person_home_ownership",
+    "person_emp_length", "loan_intent", "loan_grade", "loan_amnt",
+    "loan_int_rate", "loan_percent_income", "cb_person_default_on_file",
+    "cb_person_cred_hist_length"
+]
+
+# Display columns in a table
+st.table(pd.DataFrame({"Required Columns": required_columns}))
+
+st.write("Here’s an example of how your data might look:")
+
+# Sample data
+sample_data = pd.DataFrame([
+    [14668, 24, 28000, "OWN", 6, "HOMEIMPROVEMENT", "B", 10000, 10.37, 0.36, "N", 2],
+    [24614, 27, 64000, "RENT", 0, "PERSONAL", "C", 10000, 15.27, 0.16, "Y", 10],
+    [11096, 26, 72000, "MORTGAGE", 10, "EDUCATION", "D", 16000, None, 0.22, "N", 3],
+    [10424, 23, 27996, "RENT", 7, "DEBTCONSOLIDATION", "A", 10000, None, 0.36, "N", 2]
+], columns=required_columns)
+
+st.dataframe(sample_data)
+
+st.subheader("Load Data for Prediction")
 # --- Checkbox for sample data ---
 use_sample = st.checkbox("👉 Use sample dataset instead")
 
